@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes as Switch } from 'react-router-dom';
 import AsteroidDetail from "./views/AsteroidDetail";
 import AsteroidsList from "./views/AsteroidsList";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
   return (
