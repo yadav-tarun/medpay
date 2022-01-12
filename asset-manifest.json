@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/medpay/static/css/main.d86433d0.css",
-    "main.js": "/medpay/static/js/main.195e8a8e.js",
+    "main.js": "/medpay/static/js/main.da7851d8.js",
     "static/js/787.07c33881.chunk.js": "/medpay/static/js/787.07c33881.chunk.js",
     "index.html": "/medpay/index.html",
     "main.d86433d0.css.map": "/medpay/static/css/main.d86433d0.css.map",
-    "main.195e8a8e.js.map": "/medpay/static/js/main.195e8a8e.js.map",
+    "main.da7851d8.js.map": "/medpay/static/js/main.da7851d8.js.map",
     "787.07c33881.chunk.js.map": "/medpay/static/js/787.07c33881.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d86433d0.css",
-    "static/js/main.195e8a8e.js"
+    "static/js/main.da7851d8.js"
   ]
 }
