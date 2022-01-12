@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react/cjs/react.development";
 import { API_KEY, BASE_URL } from "../constants/constant";
 import { Button, Row, Col, Card} from 'react-bootstrap';
+import { fetchGET } from "../helper";
 
 const AsteroidDetail = () => {
     let { id } = useParams();
@@ -15,10 +16,8 @@ const AsteroidDetail = () => {
     },[id]);
 
     const getAsteroidDataById = async(id) => {
-        const response = await fetch(`${BASE_URL}/neo/${id}?api_key=${API_KEY}`);
-        const result = await response.json();
-        console.log("asdatasingle", result);
-        setAsteroidData(result);
+        const dataById = await fetchGET(`${BASE_URL}/neo/${id}?api_key=${API_KEY}`);
+        if(dataById) setAsteroidData(dataById);
     }
 
     return(

@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button, Row, Col, Card, Form, Alert } from 'react-bootstrap';
 import TableView from "./TableView";
+import { fetchGET } from "../helper";
 
 const formatDate = (dateObj) => {
 	let date = new Date(dateObj);
@@ -29,22 +30,16 @@ const AsteroidList = () => {
     const [errorMessage, setErrorMessage] = useState("");
 
     const getAllData = async() => {
-        const response = await fetch(`${BASE_URL}/neo/browse?api_key=${API_KEY}&size=10`);
-        const result = await response.json();
-        console.log("asdata", result);
-        setAsteroids(result?.near_earth_objects);
+        const allAsteroidData =  await fetchGET(`${BASE_URL}/neo/browse?api_key=${API_KEY}&size=10`);
+        if(allAsteroidData) setAsteroids(allAsteroidData?.near_earth_objects);
     }
 
     const getDataByDate = async() => {
         setErrorMessage("");
-        const response = await fetch(`${BASE_URL}/feed?&start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}&api_key=${API_KEY}&size=10`);
-        const result = await response.json();
-        if(result.hasOwnProperty("http_error")){
-            setErrorMessage(result.error_message);
-        }
+        const allAsteroidDataByDate = await fetchGET(`${BASE_URL}/feed?&start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}&api_key=${API_KEY}&size=10`);
         setIsDefault(false);
-        setAsteroidsByDate(result.near_earth_objects);
-        console.log("asdatabydate", result.near_earth_objects);
+        if(allAsteroidDataByDate) setAsteroidsByDate(allAsteroidDataByDate.near_earth_objects);
+        if(allAsteroidDataByDate.hasOwnProperty("http_error")) setErrorMessage(allAsteroidDataByDate.error_message)
     }
 
     useEffect(()=>{
