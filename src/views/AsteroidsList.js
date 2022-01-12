@@ -28,6 +28,7 @@ const AsteroidList = () => {
     const [isDefault, setIsDefault] = useState(true);
     const [isFilterEnabled, setIsFilterEnabled] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [dateError, setDateError] = useState("");
 
     const getAllData = async() => {
         const allAsteroidData =  await fetchGET(`${BASE_URL}/neo/browse?api_key=${API_KEY}&size=10`);
@@ -36,8 +37,14 @@ const AsteroidList = () => {
 
     const getDataByDate = async() => {
         setErrorMessage("");
+        setDateError("");
+        if(startDate >= endDate){
+            setDateError("end date should be greater than start date");
+            return;
+        }
         const allAsteroidDataByDate = await fetchGET(`${BASE_URL}/feed?&start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}&api_key=${API_KEY}&size=10`);
         setIsDefault(false);
+        setIsFilterEnabled(false);
         if(allAsteroidDataByDate) setAsteroidsByDate(allAsteroidDataByDate.near_earth_objects);
         if(allAsteroidDataByDate.hasOwnProperty("http_error")) setErrorMessage(allAsteroidDataByDate.error_message)
     }
@@ -68,22 +75,26 @@ const AsteroidList = () => {
                                     <Col xs={12} md={6}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label className="fw-bold">Start Date</Form.Label>
-                                        <DatePicker className="form-control" selected={startDate} dateFormat="yyyy-MM-dd" onChange={(date) => setStartDate(date)} />
+                                        <DatePicker className="form-control" selected={startDate} dateFormat="yyyy-MM-dd" onChange={(date) => {setStartDate(date); setDateError("")}} />
                                     </Form.Group>
                                     </Col>
                                     <Col xs={12} md={6}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                         <Form.Label className="fw-bold">End Date</Form.Label>
-                                        <DatePicker className="form-control" selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => setEndDate(date)} />
+                                        <DatePicker className="form-control" selected={endDate} dateFormat="yyyy-MM-dd" onChange={(date) => {setEndDate(date); setDateError("")}} />
                                     </Form.Group>
                                     </Col>
-                                    </Row>       
+                                    </Row>
+                                    {
+                                        dateError &&
+                                        <p style={{color:'red', textAlign:'center'}}>{dateError}</p>
+                                    }       
                                     <div className="text-center">
                                         <Button variant="primary" onClick={getDataByDate}>Submit</Button>
                                     </div>
                                 </div>
                             }
-                            <TableView tableData={asteroids} />
+                            <TableView tableData={asteroids} isFilterEnabled={isFilterEnabled} />
                         </Card.Body>
                     </Card>
                     </Row>
@@ -94,7 +105,7 @@ const AsteroidList = () => {
                 <Row className="m-2">
                 <div className="d-flex" style={{justifyContent:'space-between', alignItems:'baseline'}}>
                         <h3 className="mb-5">List of Asteroids for {formatDate(startDate)} to {formatDate(endDate)}</h3>
-                        <Button style={{outline:'none',boxShadow:'none'}} variant="outline-secondary" onClick={()=> {setIsDefault(!isDefault); setIsFilterEnabled(!isFilterEnabled)}}>Load Default Data</Button>
+                        <Button style={{outline:'none',boxShadow:'none'}} variant="outline-primary" onClick={()=> {setIsDefault(!isDefault); setIsFilterEnabled(false)}}>Load Default Data</Button>
                 </div>
                 { errorMessage &&
                     <Alert variant="danger">
@@ -108,7 +119,7 @@ const AsteroidList = () => {
                         return (
                             <div key={item}>
                             <p className="fw-bold mt-3">{item}</p>
-                            <TableView tableData={asteroidsByDate[item]} />
+                            <TableView tableData={asteroidsByDate[item]} isFilterEnabled={isFilterEnabled} />
                             </div>
                         )
                     })

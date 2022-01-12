@@ -34,7 +34,7 @@ const AsteroidDetail = () => {
                     <p><span className="fw-bold">Designation:</span> {asteroidData.designation}</p>
                     <p><span className="fw-bold">Hazardous:</span> {asteroidData.is_potentially_hazardous_asteroid ? "True" : "False"}</p>
                     <p><span className="fw-bold">Sentry:</span> {asteroidData.is_sentry_object ? "True" : "False"}</p>
-                    <p><span className="fw-bold">jpl_url:</span> {asteroidData.nasa_jpl_url}</p>
+                    <p><span className="fw-bold">jpl_url:</span> <a href={asteroidData.nasa_jpl_url} target="_blank">{asteroidData.nasa_jpl_url}</a></p>
                     <p><span className="fw-bold">Ref Id:</span> {asteroidData.neo_reference_id}</p>
                 </Card>
                 <>

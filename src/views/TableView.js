@@ -13,7 +13,7 @@ const TableView = (props) => {
 
     return(
         <>
-        {
+        { !props.isFilterEnabled &&
             <>
             <small style={{color:'#a8a8a8'}}>Click on any of the item below to see more details...</small>
             <Table responsive hover bordered>
