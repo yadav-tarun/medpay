@@ -21,7 +21,7 @@ const AsteroidDetail = () => {
 
     return(
         <>
-        <Row className="m-3 p-3">
+        <Row className="m-3">
                 <div className="d-flex" style={{justifyContent:'space-between', alignItems:'baseline'}}>
                         <h3 className="text-center mb-4">Asteroid Detail: {id}</h3>
                         <Button style={{outline:'none',boxShadow:'none'}} variant="outline-primary" onClick={()=>navigate('/')}>Go Back</Button>
@@ -37,9 +37,9 @@ const AsteroidDetail = () => {
                     <p><span className="fw-bold">jpl_url:</span> {asteroidData.nasa_jpl_url}</p>
                     <p><span className="fw-bold">Ref Id:</span> {asteroidData.neo_reference_id}</p>
                 </Card>
-                <Row xs={12} className="p-0">
-                    <Col xs={12} md={6}>
-                        <Card className="shadow p-3 mt-2">
+                <>
+                    <Col xs={12} md={6} className="p-0 p-md-1">
+                        <Card className="shadow mt-2 p-3">
                         <h3 className="mb-4">Close Approach Data : Only first 3</h3>
                         {
                             asteroidData.close_approach_data?.slice(0,3).map((x,i)=>{
@@ -55,7 +55,7 @@ const AsteroidDetail = () => {
                         }
                         </Card>
                     </Col>
-                    <Col xs={12} md={6}>
+                    <Col xs={12} md={6} className="p-0 p-md-1">
                         <Card className="shadow p-3 mt-2">
                         <div style={{borderBottom:'1px solid #a8a8a8'}}>
                         <h3 className="mb-4">Estimated Diameter (km)</h3>
@@ -76,7 +76,7 @@ const AsteroidDetail = () => {
                         <p><span className="fw-bold">Type:</span> {asteroidData.orbital_data?.orbit_class?.orbit_class_type}</p>
                         </Card>
                     </Col>
-                </Row>
+                </>
         </Row>
         </>
     )
