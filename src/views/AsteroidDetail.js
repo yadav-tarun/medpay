@@ -23,39 +23,62 @@ const AsteroidDetail = () => {
 
     return(
         <>
-        <Row className="m-3">
-            <Card className="shadow p-3">
+        <Row className="m-3 p-3">
                 <div className="d-flex" style={{justifyContent:'space-between', alignItems:'baseline'}}>
                         <h3 className="text-center mb-4">Asteroid Detail: {id}</h3>
-                        <Button style={{outline:'none',boxShadow:'none'}} variant="light" onClick={()=>navigate('/')}>Go Back</Button>
+                        <Button style={{outline:'none',boxShadow:'none'}} variant="outline-primary" onClick={()=>navigate('/')}>Go Back</Button>
                 </div>
-                <p>Name: {asteroidData.name}</p>
-                <p>Name Ltd: {asteroidData.name_limited}</p>
-                <p>Absolute Magnitude H: {asteroidData.absolute_magnitude_h}</p>
-                <p>Designation: {asteroidData.designation}</p>
-                <p>Hazardous: {asteroidData.is_potentially_hazardous_asteroid ? "True" : "False"}</p>
-                <p>Sentry: {asteroidData.is_sentry_object ? "True" : "False"}</p>
-                <p>jpl_url: {asteroidData.nasa_jpl_url}</p>
-                <p>RefId: {asteroidData.neo_reference_id}</p>
-                <h2>Close Approach Data : Only first 5</h2>
-                {
-                    asteroidData.close_approach_data?.map((x,i)=>{
-                        if(i >= 5) {
-                            return;
+                <Card className="shadow p-3">
+                    {/* <h3 className="mb-4">Basic Details</h3> */}
+                    <p><span className="fw-bold">Name:</span> {asteroidData.name}</p>
+                    <p><span className="fw-bold">Name Ltd:</span> {asteroidData.name_limited ? asteroidData.name_limited : "--"}</p>
+                    <p><span className="fw-bold">Absolute Magnitude H:</span> {asteroidData.absolute_magnitude_h}</p>
+                    <p><span className="fw-bold">Designation:</span> {asteroidData.designation}</p>
+                    <p><span className="fw-bold">Hazardous:</span> {asteroidData.is_potentially_hazardous_asteroid ? "True" : "False"}</p>
+                    <p><span className="fw-bold">Sentry:</span> {asteroidData.is_sentry_object ? "True" : "False"}</p>
+                    <p><span className="fw-bold">jpl_url:</span> {asteroidData.nasa_jpl_url}</p>
+                    <p><span className="fw-bold">Ref Id:</span> {asteroidData.neo_reference_id}</p>
+                </Card>
+                <Row xs={12} className="p-0">
+                    <Col xs={12} md={6}>
+                        <Card className="shadow p-3 mt-2">
+                        <h3 className="mb-4">Close Approach Data : Only first 3</h3>
+                        {
+                            asteroidData.close_approach_data?.slice(0,3).map((x,i)=>{
+                                return (
+                                    <div key={x.id} style={{borderBottom:'1px solid #a8a8a8'}}>
+                                        <p><span className="fw-bold">Approach Date:</span> {x.close_approach_date} </p>
+                                        <p><span className="fw-bold">Orbiting Body:</span> {x.orbiting_body} </p>
+                                        <p><span className="fw-bold">Relative Velocity(KM):</span> {x.relative_velocity.kilometers_per_hour} </p>
+                                        <p><span className="fw-bold">Miss Distance(KM)</span> {x.miss_distance.kilometers} </p>
+                                    </div>
+                                )
+                            })
                         }
-                        return (
-                            <p key={x.id}>Approach Date: {x.close_approach_date} | Orbiting Body: {x.orbiting_body} | Relative Velocity(km): {x.relative_velocity.kilometers_per_hour} | Miss Distance(km): {x.miss_distance.kilometers}</p>
-                        )
-                    })
-                }
-                <h2>Estimated Diameter (km)</h2>
-                <p>Min. {asteroidData.estimated_diameter?.kilometers?.estimated_diameter_min}</p>
-                <p>Max. {asteroidData.estimated_diameter?.kilometers?.estimated_diameter_max}</p>
-                <h2>Orbital Data</h2>
-                <p>Description: {asteroidData.orbital_data?.orbit_class?.orbit_class_description}</p>
-                <p>Range: {asteroidData.orbital_data?.orbit_class?.orbit_class_range}</p>
-                <p>Type: {asteroidData.orbital_data?.orbit_class?.orbit_class_type}</p>
-            </Card>
+                        </Card>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <Card className="shadow p-3 mt-2">
+                        <div style={{borderBottom:'1px solid #a8a8a8'}}>
+                        <h3 className="mb-4">Estimated Diameter (km)</h3>
+                        <p><span className="fw-bold">Min.:</span> {asteroidData.estimated_diameter?.kilometers?.estimated_diameter_min}</p>
+                        <p><span className="fw-bold">Max.:</span> {asteroidData.estimated_diameter?.kilometers?.estimated_diameter_max}</p>
+                        </div>
+                        <div style={{borderBottom:'1px solid #a8a8a8'}}>
+                        <h3 className="mb-4 mt-2">Estimated Diameter (miles)</h3>
+                        <p><span className="fw-bold">Min.:</span> {asteroidData.estimated_diameter?.miles?.estimated_diameter_min}</p>
+                        <p><span className="fw-bold">Max.:</span> {asteroidData.estimated_diameter?.miles?.estimated_diameter_max}</p>
+                        </div>
+                        </Card>
+                        <Card className="shadow p-3 mt-2">
+                        <h3 className="mb-4">Orbital Data</h3>
+                        <p><span className="fw-bold">Data arc:</span> {asteroidData?.orbital_data?.data_arc_in_days} days</p>
+                        <p><span className="fw-bold">Description:</span> {asteroidData.orbital_data?.orbit_class?.orbit_class_description}</p>
+                        <p><span className="fw-bold">Range:</span> {asteroidData.orbital_data?.orbit_class?.orbit_class_range}</p>
+                        <p><span className="fw-bold">Type:</span> {asteroidData.orbital_data?.orbit_class?.orbit_class_type}</p>
+                        </Card>
+                    </Col>
+                </Row>
         </Row>
         </>
     )

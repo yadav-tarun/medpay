@@ -2,8 +2,8 @@ import React, {useState, useEffect} from "react";
 import { API_KEY, BASE_URL } from "../constants/constant";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useNavigate } from "react-router-dom";
-import { Container, Button, Row, Col, Card, Table, Form } from 'react-bootstrap';
+import { Button, Row, Col, Card, Form, Alert } from 'react-bootstrap';
+import TableView from "./TableView";
 
 const formatDate = (dateObj) => {
 	let date = new Date(dateObj);
@@ -20,14 +20,13 @@ const formatDate = (dateObj) => {
 
 const AsteroidList = () => {
 
-    let navigate = useNavigate();
-
     const [asteroids, setAsteroids] = useState([]);
     const [asteroidsByDate, setAsteroidsByDate] = useState({});
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [isDefault, setIsDefault] = useState(true);
     const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const getAllData = async() => {
         const response = await fetch(`${BASE_URL}/neo/browse?api_key=${API_KEY}&size=10`);
@@ -37,15 +36,15 @@ const AsteroidList = () => {
     }
 
     const getDataByDate = async() => {
+        setErrorMessage("");
         const response = await fetch(`${BASE_URL}/feed?&start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}&api_key=${API_KEY}&size=10`);
         const result = await response.json();
+        if(result.hasOwnProperty("http_error")){
+            setErrorMessage(result.error_message);
+        }
         setIsDefault(false);
         setAsteroidsByDate(result.near_earth_objects);
         console.log("asdatabydate", result.near_earth_objects);
-    }
-
-    const showDetail = (id) => {
-        navigate(`/detail/${id}`);
     }
 
     useEffect(()=>{
@@ -62,7 +61,9 @@ const AsteroidList = () => {
                         <Card.Body>
                             <div className="d-flex" style={{justifyContent:'space-between', alignItems:'baseline'}}>
                                 <h3 className="mb-5">List of Asteroids</h3>
-                                <Button style={{outline:'none',boxShadow:'none'}} variant={isFilterEnabled ? "success" : "primary"} onClick={()=>setIsFilterEnabled(!isFilterEnabled)}>Filter by Date</Button>
+                                <Button style={{outline:'none',boxShadow:'none'}} variant={isFilterEnabled ? "success" : "primary"} onClick={()=>setIsFilterEnabled(!isFilterEnabled)}>
+                                    {isFilterEnabled ? "Remove Filter" : "Filter by Date"}
+                                </Button>
                             </div>
 
                             {
@@ -87,37 +88,7 @@ const AsteroidList = () => {
                                     </div>
                                 </div>
                             }
-
-                            <Table responsive hover bordered>
-                                <thead>
-                                    <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Magnitude</th>
-                                    <th>Designation</th>
-                                    <th>jpl url</th>
-                                    <th>Name Ltd</th>
-                                    <th>Is sentry</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {
-                                    asteroids && asteroids?.map(x=>{
-                                        return (
-                                            <tr key={x.id} style={{borderBottom:'1px solid #333'}}>
-                                                <td>{x.id}</td>
-                                                <td style={{cursor:'pointer'}} onClick={() => showDetail(x.id)}>{x.name}</td>
-                                                <td>{x.absolute_magnitude_h}</td>
-                                                <td>{x.designation}</td>
-                                                <td>{x.nasa_jpl_url}</td>
-                                                <td>{x.name_limited}</td>
-                                                <td>{x.is_sentry_object ? "True" : "False"}</td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                                </tbody>
-                            </Table>
+                            <TableView tableData={asteroids} />
                         </Card.Body>
                     </Card>
                     </Row>
@@ -128,45 +99,22 @@ const AsteroidList = () => {
                 <Row className="m-2">
                 <div className="d-flex" style={{justifyContent:'space-between', alignItems:'baseline'}}>
                         <h3 className="mb-5">List of Asteroids for {formatDate(startDate)} to {formatDate(endDate)}</h3>
-                        <Button style={{outline:'none',boxShadow:'none'}} variant="secondary" onClick={()=>setIsDefault(!isDefault)}>Load Default Data</Button>
+                        <Button style={{outline:'none',boxShadow:'none'}} variant="outline-secondary" onClick={()=> {setIsDefault(!isDefault); setIsFilterEnabled(!isFilterEnabled)}}>Load Default Data</Button>
                 </div>
+                { errorMessage &&
+                    <Alert variant="danger">
+                        {errorMessage}
+                    </Alert>
+                }
 
                 {asteroidsByDate &&
                     Object.keys(asteroidsByDate).map(item => {
+                        //console.log("date", item);
                         return (
-                            <>
-                            <p className="fw-bold">{item}</p>
-                            <Table responsive hover bordered>
-                                <thead>
-                                    <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Magnitude</th>
-                                    <th>Designation</th>
-                                    <th>jpl url</th>
-                                    <th>Name Ltd</th>
-                                    <th>Is sentry</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {
-                                    asteroidsByDate[item]?.map(x=>{
-                                        return (
-                                            <tr key={x.id} style={{borderBottom:'1px solid #333'}}>
-                                                <td>{x.id}</td>
-                                                <td style={{cursor:'pointer'}} onClick={() => showDetail(x.id)}>{x.name}</td>
-                                                <td>{x.absolute_magnitude_h}</td>
-                                                <td>{x.designation}</td>
-                                                <td>{x.nasa_jpl_url}</td>
-                                                <td>{x.name_limited}</td>
-                                                <td>{x.is_sentry_object ? "True" : "False"}</td>
-                                            </tr>
-                                        )
-                                    })
-                                }
-                                </tbody>
-                            </Table>
-                            </>
+                            <div key={item}>
+                            <p className="fw-bold mt-3">{item}</p>
+                            <TableView tableData={asteroidsByDate[item]} />
+                            </div>
                         )
                     })
                 }
