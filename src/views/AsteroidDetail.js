@@ -1,6 +1,5 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react/cjs/react.development";
 import { API_KEY, BASE_URL } from "../constants/constant";
 import { Button, Row, Col, Card} from 'react-bootstrap';
 import { fetchGET } from "../helper";
