@@ -5,6 +5,7 @@ import AsteroidsList from "./views/AsteroidsList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
+  document.title = "Medpay"
   return (
     <Router>
       <Switch>
